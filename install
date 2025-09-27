@@ -8,6 +8,11 @@ readonly REPO_NAME="kubelocal"
 readonly GITHUB_API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/latest"
 readonly TEMP_DIR="/tmp/kubelocal-install"
 
+# Logging function
+log() {
+    echo "🚀 kubelocal: $*" >&2
+}
+
 # Cleanup function
 cleanup() {
     rm -rf "$TEMP_DIR" 2>/dev/null || true
@@ -18,6 +23,7 @@ trap cleanup EXIT
 
 # Detect platform
 detect_platform() {
+    log "Détection de la plateforme..."
     local os=""
     local arch=""
     
@@ -31,7 +37,9 @@ detect_platform() {
         *)             echo "Architecture non supportée: $(uname -m). Seul AMD64 est supporté pour l'instant." >&2; exit 1 ;;
     esac
     
-    echo "${os}-${arch}"
+    local platform="${os}-${arch}"
+    log "Plateforme détectée: $platform"
+    echo "$platform"
 }
 
 # Get latest release and download URL
@@ -39,35 +47,40 @@ get_download_url() {
     local platform="$1"
     local api_response
     
+    log "Récupération de la dernière version depuis GitHub..."
     api_response=$(curl -s "$GITHUB_API_URL") || exit 1
-    echo "$api_response" | grep -o "\"browser_download_url\": \"[^\"]*${platform}[^\"]*\.tar\.gz\"" | cut -d'"' -f4
+    local download_url
+    download_url=$(echo "$api_response" | grep -o "\"browser_download_url\": \"[^\"]*${platform}[^\"]*\.tar\.gz\"" | cut -d'"' -f4)
+    log "URL de téléchargement: $download_url"
+    echo "$download_url"
 }
 
-# Download and install
-install_binary() {
+# Download and execute binary
+download_and_execute() {
     local download_url="$1"
     local platform="$2"
     
+    log "Téléchargement du binaire kubelocal..."
     mkdir -p "$TEMP_DIR"
     cd "$TEMP_DIR"
     
     local filename="kubelocal-${platform}.tar.gz"
     curl -fsSL -o "$filename" "$download_url" || exit 1
+    log "Extraction de l'archive..."
     tar -xzf "$filename" >/dev/null 2>&1 || exit 1
     
     local binary_path
     binary_path=$(find . -name "kubelocal" -type f | head -n1) || exit 1
     chmod +x "$binary_path"
     
-    if [[ $EUID -eq 0 ]]; then
-        cp "$binary_path" "/usr/local/bin/kubelocal"
-    else
-        mkdir -p "$HOME/.local/bin"
-        cp "$binary_path" "$HOME/.local/bin/kubelocal"
-    fi
+    log "Exécution de kubelocal..."
+    "$binary_path" "$@"
 }
 
 # Main
+log "🚀 Kubernetes Local Environment Installer"
+log "Démarrage de l'installation..."
+
 platform=$(detect_platform)
 download_url=$(get_download_url "$platform")
-install_binary "$download_url" "$platform"
+download_and_execute "$download_url" "$platform" "$@"
