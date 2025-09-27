@@ -21,17 +21,20 @@ detect_platform() {
     local os=""
     local arch=""
     
+    echo "🔍 Détection de la plateforme..." >&2
+    
     case "$(uname -s)" in
         Linux*)     os="linux" ;;
-        *)          echo "Platforme non supportée: $(uname -s). Seul Linux AMD64 est supporté pour l'instant." >&2; exit 1 ;;
+        *)          echo "❌ Platforme non supportée: $(uname -s). Seul Linux AMD64 est supporté pour l'instant." >&2; exit 1 ;;
     esac
     
     case "$(uname -m)" in
         x86_64|amd64)  arch="amd64" ;;
-        *)             echo "Architecture non supportée: $(uname -m). Seul AMD64 est supporté pour l'instant." >&2; exit 1 ;;
+        *)             echo "❌ Architecture non supportée: $(uname -m). Seul AMD64 est supporté pour l'instant." >&2; exit 1 ;;
     esac
     
     local platform="${os}-${arch}"
+    echo "✅ Plateforme détectée: $platform" >&2
     echo "$platform"
 }
 
@@ -40,9 +43,23 @@ get_download_url() {
     local platform="$1"
     local api_response
     
-    api_response=$(curl -s "$GITHUB_API_URL") || exit 1
+    echo "🔍 Récupération des informations de la dernière version..." >&2
+    api_response=$(curl -s "$GITHUB_API_URL") || {
+        echo "❌ Erreur: Impossible de récupérer les informations de version depuis GitHub API" >&2
+        exit 1
+    }
+    
     local download_url
     download_url=$(echo "$api_response" | grep -o "\"browser_download_url\": \"[^\"]*${platform}[^\"]*\.tar\.gz\"" | cut -d'"' -f4)
+    
+    if [ -z "$download_url" ]; then
+        echo "❌ Erreur: Aucune version trouvée pour la plateforme $platform" >&2
+        echo "📋 Réponse API reçue:" >&2
+        echo "$api_response" | head -20 >&2
+        exit 1
+    fi
+    
+    echo "✅ URL de téléchargement trouvée: $download_url" >&2
     echo "$download_url"
 }
 
@@ -51,22 +68,61 @@ download_and_execute() {
     local download_url="$1"
     local platform="$2"
     
-    mkdir -p "$TEMP_DIR"
-    cd "$TEMP_DIR"
+    echo "📁 Création du répertoire temporaire: $TEMP_DIR" >&2
+    mkdir -p "$TEMP_DIR" || {
+        echo "❌ Erreur: Impossible de créer le répertoire temporaire $TEMP_DIR" >&2
+        exit 1
+    }
+    
+    cd "$TEMP_DIR" || {
+        echo "❌ Erreur: Impossible d'accéder au répertoire temporaire $TEMP_DIR" >&2
+        exit 1
+    }
     
     local filename="kubelocal-${platform}.tar.gz"
-    curl -fsSL -o "$filename" "$download_url" || exit 1
-    tar -xzf "$filename" >/dev/null 2>&1 || exit 1
+    echo "⬇️  Téléchargement de $filename..." >&2
+    curl -fsSL -o "$filename" "$download_url" || {
+        echo "❌ Erreur: Échec du téléchargement de $download_url" >&2
+        exit 1
+    }
     
+    echo "📦 Extraction de l'archive..." >&2
+    tar -xzf "$filename" >/dev/null 2>&1 || {
+        echo "❌ Erreur: Échec de l'extraction de l'archive $filename" >&2
+        echo "📋 Contenu du répertoire temporaire:" >&2
+        ls -la . >&2
+        exit 1
+    }
+    
+    echo "🔍 Recherche du binaire kubelocal..." >&2
     local binary_path
-    binary_path=$(find . -name "kubelocal" -type f | head -n1) || exit 1
-    chmod +x "$binary_path"
+    binary_path=$(find . -name "kubelocal" -type f | head -n1)
     
+    if [ -z "$binary_path" ]; then
+        echo "❌ Erreur: Binaire kubelocal non trouvé dans l'archive" >&2
+        echo "📋 Contenu du répertoire temporaire:" >&2
+        ls -la . >&2
+        echo "📋 Recherche de tous les fichiers:" >&2
+        find . -type f >&2
+        exit 1
+    fi
+    
+    echo "✅ Binaire trouvé: $binary_path" >&2
+    echo "🔧 Attribution des permissions d'exécution..." >&2
+    chmod +x "$binary_path" || {
+        echo "❌ Erreur: Impossible d'attribuer les permissions d'exécution à $binary_path" >&2
+        exit 1
+    }
+    
+    echo "🚀 Lancement de kubelocal..." >&2
     # Rediriger stdin vers le terminal pour permettre les interactions
     "$binary_path" "$@" < /dev/tty
 }
 
 # Main
+echo "🚀 Installation de kubelocal..." >&2
+echo "=================================" >&2
+
 platform=$(detect_platform)
 download_url=$(get_download_url "$platform")
 download_and_execute "$download_url" "$platform" "$@"
