@@ -74,7 +74,8 @@ download_and_execute() {
     chmod +x "$binary_path"
     
     log "Exécution de kubelocal..."
-    "$binary_path" "$@"
+    # Rediriger stdin vers le terminal pour permettre les interactions
+    "$binary_path" "$@" < /dev/tty
 }
 
 # Main
