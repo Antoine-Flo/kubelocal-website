@@ -40,7 +40,7 @@ get_download_url() {
     local api_response
     
     api_response=$(curl -s "$GITHUB_API_URL") || exit 1
-    echo "$api_response" | grep -o "\"browser_download_url\": \"[^\"]*${platform}[^\"]*\"" | cut -d'"' -f4
+    echo "$api_response" | grep -o "\"browser_download_url\": \"[^\"]*${platform}[^\"]*\.tar\.gz\"" | cut -d'"' -f4
 }
 
 # Download and install
