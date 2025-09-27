@@ -47,7 +47,7 @@
                     <div class="hero__install">
                         <div class="hero__install-label">Installez kubelocal :</div>
                         <div class="hero__install-command">
-                            <code class="hero__install-code">curl -fsSL https://kubelocal-website.pages.dev/install.sh | sh</code>
+                            <code class="hero__install-code">curl -fsSL https://kubelocal-website.pages.dev/install | sh</code>
                             <button class="hero__install-copy" onclick="copyToClipboard()" title="Copier la commande">
                                 <span class="hero__install-copy-icon">📋</span>
                             </button>
@@ -86,7 +86,7 @@
                         <div class="hero__terminal-content">
                             <div class="hero__terminal-line">
                                 <span class="hero__terminal-prompt">$</span>
-                                <span class="hero__terminal-command">curl -fsSL https://kubelocal-website.pages.dev/install.sh | sh</span>
+                                <span class="hero__terminal-command">curl -fsSL https://kubelocal-website.pages.dev/install | sh</span>
                             </div>
                             <div class="hero__terminal-line hero__terminal-line--output">
                                 🚀 Kubernetes Local Environment Installer
@@ -238,7 +238,7 @@
 
     <script>
         function copyToClipboard() {
-            const command = 'curl -fsSL https://kubelocal-website.pages.dev/install.sh | sh';
+            const command = 'curl -fsSL https://kubelocal-website.pages.dev/install | sh';
             navigator.clipboard.writeText(command).then(() => {
                 const button = document.querySelector('.hero__install-copy');
                 const originalIcon = button.innerHTML;
