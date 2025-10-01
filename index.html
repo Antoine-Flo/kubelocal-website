@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kubelocal - Installation locale de Kubernetes en une commande</title>
-    <meta name="description" content="Installez un environnement Kubernetes local complet en une seule commande. Support Docker/Podman et Kind/Minikube.">
+    <title>kubelocal - One-line installer for local Kubernetes development environment</title>
+    <meta name="description"
+        content="Interactive installer for learning and experimenting with local Kubernetes development. Supports Docker/Podman and Kind/Minikube.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="page">
         <!-- Header Section -->
@@ -20,9 +23,10 @@
                     <span class="header__logo-text">kubelocal</span>
                 </div>
                 <nav class="header__nav">
-                    <a href="#features" class="header__nav-link">Fonctionnalités</a>
+                    <a href="#tools" class="header__nav-link">Tools</a>
                     <a href="#installation" class="header__nav-link">Installation</a>
-                    <a href="https://github.com/Antoine-Flo/kubelocal" class="header__nav-link header__nav-link--github" target="_blank" rel="noopener">
+                    <a href="https://github.com/Antoine-Flo/kubelocal" class="header__nav-link header__nav-link--github"
+                        target="_blank" rel="noopener">
                         <span class="header__nav-icon">📦</span>
                         GitHub
                     </a>
@@ -34,26 +38,33 @@
         <section class="hero">
             <div class="hero__container">
                 <div class="hero__content">
+                    <div class="hero__ascii">
+                        <pre class="hero__ascii-art">╦╔═╦ ╦╔╗ ╔═╗╦  ╔═╗╔═╗╔═╗╦  
+╠╩╗║ ║╠╩╗║╣ ║  ║ ║║  ╠═╣║  
+╩ ╩╚═╝╚═╝╚═╝╩═╝╚═╝╚═╝╩ ╩╩═╝</pre>
+                    </div>
                     <h1 class="hero__title">
-                        Kubernetes local en 
-                        <span class="hero__title-accent">une commande</span>
+                        Local Kubernetes in
+                        <span class="hero__title-accent">one command</span>
                     </h1>
                     <p class="hero__description">
-                        Installez un environnement de développement Kubernetes complet sur votre machine locale. 
-                        Choisissez votre runtime de conteneur et votre distribution Kubernetes préférée.
+                        Interactive installer designed for <strong>learning and experimentation</strong> with local
+                        Kubernetes development.
+                        Simplifies the setup of essential tools for hands-on Kubernetes learning.
                     </p>
-                    
+
                     <!-- Installation Command -->
                     <div class="hero__install">
-                        <div class="hero__install-label">Installez kubelocal :</div>
+                        <div class="hero__install-label">Install kubelocal:</div>
                         <div class="hero__install-command">
-                            <code class="hero__install-code">curl -fsSL https://kubelocal-website.pages.dev/install | sh</code>
-                            <button class="hero__install-copy" onclick="copyToClipboard()" title="Copier la commande">
+                            <code
+                                class="hero__install-code">curl -fsSL https://kubelocal-website.pages.dev/install | sh</code>
+                            <button class="hero__install-copy" onclick="copyToClipboard()" title="Copy command">
                                 <span class="hero__install-copy-icon">📋</span>
                             </button>
                         </div>
                         <div class="hero__install-note">
-                            Compatible avec Debian/Ubuntu • Architecture amd64
+                            ⚠️ <strong>Linux amd64 only</strong> • Learning tool for VMs/WSL environments
                         </div>
                     </div>
 
@@ -68,95 +79,122 @@
                         </div>
                         <div class="hero__stat">
                             <div class="hero__stat-number">1</div>
-                            <div class="hero__stat-label">Commande</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hero__visual">
-                    <div class="hero__terminal">
-                        <div class="hero__terminal-header">
-                            <div class="hero__terminal-dots">
-                                <span class="hero__terminal-dot hero__terminal-dot--red"></span>
-                                <span class="hero__terminal-dot hero__terminal-dot--yellow"></span>
-                                <span class="hero__terminal-dot hero__terminal-dot--green"></span>
-                            </div>
-                            <div class="hero__terminal-title">Terminal</div>
-                        </div>
-                        <div class="hero__terminal-content">
-                            <div class="hero__terminal-line">
-                                <span class="hero__terminal-prompt">$</span>
-                                <span class="hero__terminal-command">curl -fsSL https://kubelocal-website.pages.dev/install | sh</span>
-                            </div>
-                            <div class="hero__terminal-line hero__terminal-line--output">
-                                🚀 Kubernetes Local Environment Installer
-                            </div>
-                            <div class="hero__terminal-line hero__terminal-line--output">
-                                Install Docker (d) or Podman (p) : d
-                            </div>
-                            <div class="hero__terminal-line hero__terminal-line--output">
-                                Install Kind (k) or Minikube (m) : k
-                            </div>
-                            <div class="hero__terminal-line hero__terminal-line--output">
-                                <span class="hero__terminal-success">✓ Installation completed successfully!</span>
-                            </div>
+                            <div class="hero__stat-label">Command</div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="features">
-            <div class="features__container">
-                <h2 class="features__title">Pourquoi choisir kubelocal ?</h2>
-                <div class="features__grid">
-                    <div class="feature">
-                        <div class="feature__icon">🐳</div>
-                        <h3 class="feature__title">Runtime flexible</h3>
-                        <p class="feature__description">
-                            Choisissez entre Docker ou Podman selon vos préférences et contraintes d'environnement.
-                        </p>
+        <!-- Tools Section -->
+        <section id="tools" class="tools">
+            <div class="tools__container">
+                <h2 class="tools__title">What kubelocal installs</h2>
+
+                <div class="tools__sections">
+                    <!-- Available Tools -->
+                    <div class="tools__section">
+                        <h3 class="tools__section-title">
+                            <span class="tools__section-icon">🔧</span>
+                            You choose
+                        </h3>
+                        <div class="tools__subsection">
+                            <h4 class="tools__subsection-title">Container Runtime</h4>
+                            <div class="tools__list">
+                                <div class="tool-item">
+                                    <span class="tool-item__icon">🐳</span>
+                                    <div class="tool-item__info">
+                                        <span class="tool-item__name">Docker</span>
+                                        <span class="tool-item__description">Container platform for development</span>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <span class="tool-item__icon">🛡️</span>
+                                    <div class="tool-item__info">
+                                        <span class="tool-item__name">Podman</span>
+                                        <span class="tool-item__description">Rootless container runtime
+                                            alternative</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tools__subsection">
+                            <h4 class="tools__subsection-title">Kubernetes Runtime</h4>
+                            <div class="tools__list">
+                                <div class="tool-item">
+                                    <span class="tool-item__icon">☸️</span>
+                                    <div class="tool-item__info">
+                                        <span class="tool-item__name">Kind</span>
+                                        <span class="tool-item__description">Kubernetes in Docker for local
+                                            development</span>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <span class="tool-item__icon">🚀</span>
+                                    <div class="tool-item__info">
+                                        <span class="tool-item__name">Minikube</span>
+                                        <span class="tool-item__description">Local Kubernetes cluster with multiple
+                                            drivers</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tools__subsection">
+                            <h4 class="tools__subsection-title">CLI Tools</h4>
+                            <div class="tools__list">
+                                <div class="tool-item">
+                                    <span class="tool-item__icon">⛵</span>
+                                    <div class="tool-item__info">
+                                        <span class="tool-item__name">Helm</span>
+                                        <span class="tool-item__description">Package manager for Kubernetes</span>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <span class="tool-item__icon">🔧</span>
+                                    <div class="tool-item__info">
+                                        <span class="tool-item__name">Kustomize</span>
+                                        <span class="tool-item__description">Configuration customization tool</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="feature">
-                        <div class="feature__icon">☸️</div>
-                        <h3 class="feature__title">Distributions Kubernetes</h3>
-                        <p class="feature__description">
-                            Support de Kind et Minikube pour différents cas d'usage de développement local.
-                        </p>
+
+                    <!-- Always Installed -->
+                    <div class="tools__section">
+                        <h3 class="tools__section-title">
+                            <span class="tools__section-icon">✅</span>
+                            Always Installed
+                        </h3>
+                        <div class="tools__list">
+                            <div class="tool-item tool-item">
+                                <span class="tool-item__icon">⚙️</span>
+                                <div class="tool-item__info">
+                                    <span class="tool-item__name">kubectl</span>
+                                    <span class="tool-item__description">Kubernetes command-line interface</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="feature">
-                        <div class="feature__icon">⚡</div>
-                        <h3 class="feature__title">Installation rapide</h3>
-                        <p class="feature__description">
-                            Configuration complète en quelques minutes avec un processus guidé et interactif.
-                        </p>
-                    </div>
-                    
-                    <div class="feature">
-                        <div class="feature__icon">💾</div>
-                        <h3 class="feature__title">Stockage persistant</h3>
-                        <p class="feature__description">
-                            Configuration automatique du stockage local pour vos workloads et données.
-                        </p>
-                    </div>
-                    
-                    <div class="feature">
-                        <div class="feature__icon">🔧</div>
-                        <h3 class="feature__title">Configuration automatique</h3>
-                        <p class="feature__description">
-                            Installation et configuration automatique de kubectl et de votre cluster.
-                        </p>
-                    </div>
-                    
-                    <div class="feature">
-                        <div class="feature__icon">🎯</div>
-                        <h3 class="feature__title">Interface intuitive</h3>
-                        <p class="feature__description">
-                            Prompts clairs et guidés pour une expérience d'installation sans friction.
-                        </p>
+
+                    <!-- Tips -->
+                    <div class="tools__section">
+                        <h3 class="tools__section-title">
+                            <span class="tools__section-icon">💡</span>
+                            Tips
+                        </h3>
+                        <div class="tools__list">
+                            <div class="tool-item tool-item">
+                                <span class="tool-item__icon">🔗</span>
+                                <div class="tool-item__info">
+                                    <span class="tool-item__name">k alias</span>
+                                    <span class="tool-item__description">Creates a convenient 'k' alias for
+                                        kubectl</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,35 +203,66 @@
         <!-- Installation Section -->
         <section id="installation" class="installation">
             <div class="installation__container">
-                <h2 class="installation__title">Installation en 3 étapes</h2>
+                <h2 class="installation__title">Installation in 4 steps</h2>
                 <div class="installation__steps">
                     <div class="step">
                         <div class="step__number">1</div>
                         <div class="step__content">
-                            <h3 class="step__title">Exécutez la commande</h3>
+                            <h3 class="step__title">Run the command</h3>
                             <p class="step__description">
-                                Copiez et exécutez la commande d'installation dans votre terminal.
+                                Copy and execute the installation command in your terminal.
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="step">
                         <div class="step__number">2</div>
                         <div class="step__content">
-                            <h3 class="step__title">Choisissez vos options</h3>
+                            <h3 class="step__title">Choose container runtime</h3>
                             <p class="step__description">
-                                Sélectionnez votre runtime de conteneur (Docker/Podman) et votre distribution Kubernetes (Kind/Minikube).
+                                Select your preferred container runtime: Docker or Podman.
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="step">
                         <div class="step__number">3</div>
                         <div class="step__content">
-                            <h3 class="step__title">C'est prêt !</h3>
+                            <h3 class="step__title">Select Kubernetes distribution</h3>
                             <p class="step__description">
-                                Votre environnement Kubernetes local est configuré et prêt à l'emploi.
+                                Choose between Kind or Minikube for your local Kubernetes cluster.
                             </p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step__number">4</div>
+                        <div class="step__content">
+                            <h3 class="step__title">Optional CLI tools</h3>
+                            <p class="step__description">
+                                Choose additional tools like Helm and Kustomize to enhance your workflow.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alternative Installation Methods -->
+                <div class="installation__alternatives">
+                    <h3 class="installation__alternatives-title">Alternative Installation</h3>
+                    <div class="installation__manual">
+                        <h4 class="installation__manual-title">Manual Download</h4>
+                        <div class="installation__manual-code">
+                            <div class="installation__manual-line"># Download the release</div>
+                            <div class="installation__manual-line">wget
+                                https://github.com/Antoine-Flo/kubelocal/releases/download/v0.0.5/kubelocal-v0.0.5-linux-amd64.tar.gz
+                            </div>
+                            <div class="installation__manual-line"># Extract</div>
+                            <div class="installation__manual-line">tar -xzf kubelocal-v0.0.5-linux-amd64.tar.gz</div>
+                            <div class="installation__manual-line"># Run</div>
+                            <div class="installation__manual-line installation__manual-line--last">./kubelocal</div>
+                        </div>
+                        <div class="installation__manual-note">
+                            Check version: <code class="installation__manual-inline-code">./kubelocal --version</code>
                         </div>
                     </div>
                 </div>
@@ -210,26 +279,29 @@
                             <span class="footer__logo-text">kubelocal</span>
                         </div>
                         <p class="footer__description">
-                            Fait avec ❤️ pour la communauté Kubernetes
+                            Made with ❤️ for the Kubernetes community
                         </p>
                     </div>
-                    
+
                     <div class="footer__links">
-                        <a href="https://github.com/Antoine-Flo/kubelocal" class="footer__link" target="_blank" rel="noopener">
-                            📦 Repository GitHub
+                        <a href="https://github.com/Antoine-Flo/kubelocal" class="footer__link" target="_blank"
+                            rel="noopener">
+                            📦 GitHub Repository
                         </a>
-                        <a href="https://github.com/Antoine-Flo/kubelocal/issues" class="footer__link" target="_blank" rel="noopener">
-                            🐛 Signaler un bug
+                        <a href="https://github.com/Antoine-Flo/kubelocal/issues" class="footer__link" target="_blank"
+                            rel="noopener">
+                            🐛 Report a bug
                         </a>
-                        <a href="https://github.com/Antoine-Flo/kubelocal/discussions" class="footer__link" target="_blank" rel="noopener">
+                        <a href="https://github.com/Antoine-Flo/kubelocal/discussions" class="footer__link"
+                            target="_blank" rel="noopener">
                             💬 Discussions
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="footer__bottom">
                     <p class="footer__copyright">
-                        © 2025 kubelocal. Licence MIT.
+                        © 2025 kubelocal. MIT License.
                     </p>
                 </div>
             </div>
@@ -244,13 +316,13 @@
                 const originalIcon = button.innerHTML;
                 button.innerHTML = '<span class="hero__install-copy-icon">✓</span>';
                 button.classList.add('hero__install-copy--copied');
-                
+
                 setTimeout(() => {
                     button.innerHTML = originalIcon;
                     button.classList.remove('hero__install-copy--copied');
                 }, 2000);
             }).catch(err => {
-                console.error('Erreur lors de la copie:', err);
+                console.error('Error copying:', err);
             });
         }
 
@@ -269,4 +341,5 @@
         });
     </script>
 </body>
+
 </html>
