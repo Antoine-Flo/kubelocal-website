@@ -40,7 +40,7 @@ get_download_url() {
     
     api_response=$(curl -s "$GITHUB_API_URL") || exit 1
     local download_url
-    download_url=$(echo "$api_response" | grep -o "\"browser_download_url\": \"[^\"]*${platform}[^\"]*\.tar\.gz\"" | cut -d'"' -f4)
+    download_url=$(echo "$api_response" | grep -o "\"browser_download_url\": \"[^\"]*${platform}[^\"]*\"" | grep -v "\.tar\.gz" | cut -d'"' -f4)
     echo "$download_url"
 }
 
@@ -52,16 +52,15 @@ download_and_execute() {
     mkdir -p "$TEMP_DIR"
     cd "$TEMP_DIR"
     
-    local filename="kubelocal-${platform}.tar.gz"
-    curl -fsSL -o "$filename" "$download_url" || exit 1
-    tar -xzf "$filename" >/dev/null 2>&1 || exit 1
+    # Extraire le nom du fichier depuis l'URL
+    local filename
+    filename=$(basename "$download_url")
     
-    local binary_path
-    binary_path=$(find . -name "kubelocal" -type f | head -n1) || exit 1
-    chmod +x "$binary_path"
+    curl -fsSL -o "$filename" "$download_url" || exit 1
+    chmod +x "$filename"
     
     # Rediriger stdin vers le terminal pour permettre les interactions
-    "$binary_path" "$@" < /dev/tty
+    "./$filename" "$@" < /dev/tty
 }
 
 # Main
